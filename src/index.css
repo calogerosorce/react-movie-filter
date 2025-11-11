@@ -34,6 +34,11 @@
   }
 }
 
+input::placeholder {
+
+  color: gray !important
+}
+
 .card {
   background-color: #1d1c1c;
   color: white;

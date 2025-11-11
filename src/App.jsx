@@ -24,7 +24,7 @@ function App() {
     {
       id: 2,
       title: 'After',
-      genere: 'Romantico',
+      genere: 'Fantascienza',
       src: After
     },
     {
@@ -36,7 +36,7 @@ function App() {
     {
       id: 4,
       title: 'John Wick',
-      genere: 'Fantascienza',
+      genere: 'Azione',
       src: JohnWick
     },
     {
@@ -50,6 +50,7 @@ function App() {
   const [films, setFilms] = useState(film)
   const [regola, setRegola] = useState(films)
   const [select, setSelect] = useState('')
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     const selectFilms = films.filter(items => items.genere.includes(select))
@@ -66,6 +67,22 @@ function App() {
     };
 
   }, [films, select])
+
+  useEffect(() => {
+    const filterFilms = films.filter(items => items.title.toLowerCase().includes(search.toLowerCase()))
+
+    setRegola(filterFilms)
+
+    if (search.length === 0) {
+      setRegola(films)
+    }
+  }, [films, search])
+
+  function handleSubmit(e) {
+    e.preventDefault()
+
+  }
+
   return (
     <>
 
@@ -74,12 +91,17 @@ function App() {
         <div className="content">
           <h1>Film</h1>
           <div className="row g-4 m-3">
+            <form onSubmit={handleSubmit}>
+              <div className="input-group mb-3">
+                <input type="text" className="form-control bg-dark border rounded-start border-secondary px-2" placeholder="Search film" aria-label="Search film" aria-describedby="search_film" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <button className="btn btn-outline-secondary" type="submit" id="search_film" >Button</button>
+              </div>
+            </form>
             <div className="form-floating">
-              <select className="form-select bg-dark text-white" id="floatingSelect" aria-label="Floating label select example">
+              <select className="form-control bg-dark text-secondary border border-secondary" id="floatingSelect" aria-label="Floating label select example">
                 <option value={''}>Open this select menu</option>
                 <option value="Fantascienza">Fantascienza</option>
                 <option value="Thriller">Thriller</option>
-                <option value="Romantico">Romantico</option>
                 <option value="Azione">Azione</option>
               </select>
             </div>
