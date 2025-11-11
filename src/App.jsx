@@ -49,39 +49,39 @@ function App() {
 
   const [films, setFilms] = useState(film)
   const [regola, setRegola] = useState(films)
-  const [select, setSelect] = useState('')
-  const [search, setSearch] = useState('')
   const [title, setTitle] = useState('')
   const [image, setImage] = useState('')
   const [genere, setGenere] = useState('')
+  const [search, setSearch] = useState('')
+  const [genereIn, setGenereIn] = useState('')
 
 
 
   useEffect(() => {
-    const selectFilms = films.filter(items => items.genere.includes(select))
-    setRegola(selectFilms)
 
-    const selectElement = document.getElementById('floatingSelect');
-    const handleSelectChange = (event) => {
-      setSelect(event.target.value);
-    };
-    selectElement.addEventListener('change', handleSelectChange);
 
-    return () => {
-      selectElement.removeEventListener('change', handleSelectChange);
-    };
+    if (genere.length > 0 && search.length > 0) {
+      const selezione = films.filter(items => items.genere === genere)
+      const filterFilms = selezione.filter(items => items.title.toLowerCase().includes(search.toLowerCase()))
+      setRegola(filterFilms)
 
-  }, [films, select])
-
-  useEffect(() => {
-    const filterFilms = films.filter(items => items.title.toLowerCase().includes(search.toLowerCase()))
-
-    setRegola(filterFilms)
-
-    if (search.length === 0) {
+    } else if (genere.length > 0) {
+      const selezione = films.filter(items => items.genere === genere)
+      setRegola(selezione)
+    } else if (search.length > 0) {
+      const filterFilms = films.filter(items => items.title.toLowerCase().includes(search.toLowerCase()))
+      setRegola(filterFilms)
+    } else {
       setRegola(films)
     }
-  }, [films, search])
+
+
+
+
+
+  }, [films, genere, search])
+
+
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -92,7 +92,7 @@ function App() {
     e.preventDefault()
     if (regola.length > 1) {
       let newId = regola[regola.length - 1]?.id + 1
-      const newArray = [...regola, { id: newId, title: title, genere: genere, src: image }]
+      const newArray = [...regola, { id: newId, title: title, genere: genereIn, src: image }]
       setRegola(newArray)
 
     }
@@ -120,7 +120,7 @@ function App() {
               </div>
             </form>
             <div className="form-floating">
-              <select className="form-control bg-dark text-secondary border border-secondary" id="floatingSelect" aria-label="Floating label select example">
+              <select className="form-control bg-dark text-secondary border border-secondary" id="floatingSelect" aria-label="Floating label select example" onChange={(e) => setGenere(e.target.value)} value={genere}>
                 <option value={''}>Open this select menu</option>
                 {newArray.map((items, i) => (
                   <option key={i} value={items}>{items}</option>
@@ -134,7 +134,7 @@ function App() {
               <label className="form-label text-white">Title</label>
               <input type="text" id="inputTitle" className="form-control text-white bg-dark border rounded-start border-secondary px-2" aria-describedby="title" value={title} onChange={(e) => setTitle(e.target.value)} />
               <label className="form-label text-white">Genere</label>
-              <input type="text" id="inputGenere" className="form-control text-white bg-dark border rounded-start border-secondary px-2" aria-describedby="genere" value={genere} onChange={(e) => setGenere(e.target.value)} />
+              <input type="text" id="inputGenere" className="form-control text-white bg-dark border rounded-start border-secondary px-2" aria-describedby="genere" value={genereIn} onChange={(e) => setGenereIn(e.target.value)} />
               <label className="form-label text-white">Image</label>
               <input type="text" id="inputImage" className="form-control text-white bg-dark border rounded-start border-secondary px-2" aria-describedby="image" value={image} onChange={(e) => setImage(e.target.value)} />
               <button type="submit" className="btn btn-primary my-3">Confirm identity</button>
